@@ -13,6 +13,7 @@ struct sigaction sa_term;
 static const struct option long_options[] = {
 	{"username", required_argument, NULL, 'u'},
 	{"password", required_argument, NULL, 'p'},
+	{"ip", required_argument, NULL, 'i'},
 	{"iface", required_argument, NULL, 'f'},
 	{"dns", required_argument, NULL, 'n'},
 	{"hostname", required_argument, NULL, 't'},
@@ -29,6 +30,7 @@ static const struct option long_options[] = {
 void PrintHelp(const char * argn) {
 	printf("Usage: %s --username <username> --password <password> [options...]\n"
 		" -f, --iface <ifname> Interface to perform authentication.\n"
+		" -i, --ip <ipaddr> User specified IP address to submit to 802.1X server. \n"
 		" -n, --dns <dns> DNS server address to be sent to UDP server.\n"
 		" -t, --hostname <hostname>\n"
 		" -s, --udp-server <server>\n"
@@ -55,7 +57,7 @@ int main(int argc, char *argv[]) {
 	time_t ctime;
 	struct tm * cltime;
 
-	while ((ch = getopt_long(argc, argv, "u:p:E:f:m:a:k:g:n:t:T:s:c:h:oD::",
+	while ((ch = getopt_long(argc, argv, "u:p:E:f:m:a:k:g:n:t:T:s:i:c:h:oD::",
 			long_options, NULL)) != -1) {
 		switch (ch) {
 		case 'u':
@@ -84,6 +86,13 @@ int main(int argc, char *argv[]) {
 				LogWrite(INIT, ERROR, "UDP server IP invalid!");
 				exit(-1);
 			}
+			break;
+		case 'i':
+			if (!inet_aton(optarg, &my_ipaddr)) {
+				LogWrite(INIT, ERROR, "User specified IP invalid!");
+				exit(-1);
+			}
+			userSpecifiedIp = 1;
 			break;
 		case 'T':
 			if((sscanf(optarg, "%hhu:%hhu", &a_hour, &a_minute) != 2) || (a_hour >= 24) || (a_minute >= 60)) {

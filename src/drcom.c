@@ -89,7 +89,8 @@ size_t AppendDrcomResponseIdentity(const uint8_t *request, uint8_t *EthHeader,
 	Packet[packetlen++] = 0x0;
 	Packet[packetlen++] = 0x0;
 
-	memcpy(Packet + packetlen, (char *) (&local_ipaddr.s_addr), 4);
+	if (userSpecifiedIp) memcpy(Packet + packetlen, (char *) (&my_ipaddr.s_addr), 4);
+	else memcpy(Packet + packetlen, (char *) (&local_ipaddr.s_addr), 4);
 	packetlen += 4;
 	if (packetlen < 96) {
 		packetlen = 96;
@@ -122,7 +123,7 @@ size_t AppendDrcomResponseMD5(const uint8_t *request, uint8_t *EthHeader,
 	// Extensible Authentication Protocol
 	Packet[18] = /*(EAP_Code)*/RESPONSE;	// Code
 	Packet[19] = request[19];	// ID
-	//Packet[20~21]留空	
+	//Packet[20~21]留空
 	Packet[22] = /*(EAP_Type)*/MD5;	// Type
 	Packet[23] = 0x10;		// Value-Size: 16 Bytes
 	packetlen = 24;
@@ -137,7 +138,8 @@ size_t AppendDrcomResponseMD5(const uint8_t *request, uint8_t *EthHeader,
 	Packet[packetlen++] = 0x61;
 	Packet[packetlen++] = 0x2a;
 	Packet[packetlen++] = 0x0;
-	memcpy(Packet + packetlen, (char *) (&local_ipaddr.s_addr), 4);  // 填充ip
+	if (userSpecifiedIp) memcpy(Packet + packetlen, (char *) (&my_ipaddr.s_addr), 4);
+	else memcpy(Packet + packetlen, (char *) (&local_ipaddr.s_addr), 4);  // 填充ip
 	packetlen += 4;
 	// 补填前面留空的两处Length
 	eaplen = htons(userlen + 31);
@@ -241,7 +243,8 @@ int Drcom_MISC_INFO_Setter(uint8_t *send_data, uint8_t *recv_data) {
 	memcpy(send_data + packetlen, MAC, 6);
 	packetlen += 6;
 	// 填ip
-	memcpy(send_data + packetlen, (char *) (&local_ipaddr.s_addr), 4);
+	if (userSpecifiedIp) memcpy(send_data + packetlen, (char *) (&my_ipaddr.s_addr), 4);
+	else memcpy(send_data + packetlen, (char *) (&local_ipaddr.s_addr), 4);
 	packetlen += 4;
 
 	send_data[packetlen++] = 0x02;
@@ -378,7 +381,8 @@ int Drcom_MISC_HEART_BEAT_03_TYPE_Setter(uint8_t *send_data, uint8_t *recv_data)
 
 	memcpy(send_data + 16, drcom_misc3_flux, 4);
 
-	memcpy(send_data + 28, (char *) (&local_ipaddr.s_addr), 4);
+	if (userSpecifiedIp) memcpy(send_data + 28, (char *) (&my_ipaddr.s_addr), 4);
+	else memcpy(send_data + 28, (char *) (&local_ipaddr.s_addr), 4);
 	packetlen = 40;
 
 	return packetlen;
@@ -404,4 +408,3 @@ int Drcom_ALIVE_HEARTBEAT_TYPE_Setter(uint8_t *send_data, uint8_t *recv_data) {
 	send_data[packetlen++] = 0xff & (timeinfo >> 8);
 	return packetlen;
 }
-

@@ -334,6 +334,7 @@ void printIfInfo() {
 	// 打印网络信息到前台显示
 	LogWrite(INIT, INF, "Hostname: %s", HostName);
 	LogWrite(INIT, INF, "IP: %s", inet_ntoa(local_ipaddr));
+	if (userSpecifiedIp) LogWrite(INIT, INF, "User specified IP: %s", inet_ntoa(my_ipaddr));
 	LogWrite(INIT, INF, "DNS: %s", inet_ntoa(dns_ipaddr));
 	LogWrite(INIT, INF, "UDP server: %s", inet_ntoa(udpserver_ipaddr));
 	LogWrite(INIT, INF, "MAC: %02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx",

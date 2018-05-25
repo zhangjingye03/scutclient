@@ -17,6 +17,8 @@
 
 extern struct in_addr udpserver_ipaddr;
 extern struct in_addr dns_ipaddr;
+extern struct in_addr my_ipaddr;
+extern char userSpecifiedIp;
 extern char *UserName;
 extern char *Password;
 extern char *HookCmd;
@@ -28,4 +30,3 @@ extern int Version_len;
 
 void hexStrToByte(const char* source, unsigned char* dest, int sourceLen);
 #endif
-

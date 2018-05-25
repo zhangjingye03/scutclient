@@ -3,6 +3,8 @@
 
 struct in_addr udpserver_ipaddr;
 struct in_addr dns_ipaddr;
+struct in_addr my_ipaddr;
+char userSpecifiedIp = 0;
 char *UserName;
 char *Password;
 char *HookCmd;
@@ -36,4 +38,3 @@ void hexStrToByte(const char* source, unsigned char* dest, int sourceLen) {
 	}
 	return;
 }
-
